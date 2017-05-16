@@ -1,9 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GroundControl : MonoBehaviour {
 	public float velocidad;
+	public Text letreroDebug;
+	private Vector3 vectorAnterior;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -15,57 +19,61 @@ public class GroundControl : MonoBehaviour {
 		float moveVertical = Input.GetAxis ("Vertical");
 		Vector3 movement = new Vector3 (-moveVertical, 0.0f,- moveHorizontal);
 		transform.Rotate (movement);
-		/*float rotacionActualX = transform.rotation.x;//valor de la rotación tomada del objeto 
-		float rotacionActualZ = transform.rotation.z;
-		float movimientoXAhora = Input.acceleration.x;//valor de la rotación por el acelerometro
-		float movimientoZAhora = Input.acceleration.y;
+
+		float movimientoXAhora = Input.acceleration.y;//valores del acelerometro
+		float movimientoZAhora = Input.acceleration.x;
 
 		if (movimientoZAhora > 0) {//si la rotación es positiva
-			if (movimientoZAhora < movimientoZAnterior) {
-				rotacionActualZ -= movimientoZAhora * multiplicadorRotacion; 
-			} else {
-				rotacionActualZ += movimientoZAhora * multiplicadorRotacion; 
+			if (movimientoZAhora < vectorAnterior.z) {
+				movimientoZAhora = -movimientoZAhora; 
 			}
 
 		} else {//si la rotación es negativa
-			if (movimientoZAhora < movimientoZAnterior) {
-				rotacionActualZ += movimientoZAhora * multiplicadorRotacion; 
+			if (movimientoZAhora < vectorAnterior.z) {
+				
 			} else {
-				rotacionActualZ -= movimientoZAhora * multiplicadorRotacion; 
+				movimientoZAhora = -movimientoZAhora ; 
 			}
 		}
 
 		if (movimientoXAhora > 0) {//si la rotación es positiva
-			if (movimientoXAhora < movimientoXAnterior) {
-				rotacionActualX -= movimientoXAhora * multiplicadorRotacion; 
-			} else {
-				rotacionActualX += movimientoXAhora * multiplicadorRotacion; 
+			if (movimientoXAhora < vectorAnterior.x) {
+				movimientoXAhora = -movimientoXAhora; 
 			}
 
 		} else {//si la rotación es negativa
-			if (movimientoXAhora < movimientoXAnterior) {
-				rotacionActualX += movimientoXAhora * multiplicadorRotacion; 
+			if (movimientoXAhora < vectorAnterior.x) {
+
 			} else {
-				rotacionActualX -= movimientoXAhora * multiplicadorRotacion; 
+				movimientoXAhora = -movimientoXAhora ; 
 			}
 		}
+			
 
-		movimientoXAnterior = movimientoXAhora;
-		movimientoZAnterior = movimientoZAhora;
-
-		Vector3 movimientoAcelerometro = new Vector3 (-rotacionActualX, 0, -rotacionActualZ);
-		transform.Rotate (movimientoAcelerometro);
-*/
 		Vector3 dir = Vector3.zero;
-		dir.x = Input.acceleration.y;
-		dir.z = -Input.acceleration.x;
+		//dir.x = Input.acceleration.y;
+		//dir.z = -Input.acceleration.x;
+
+		dir.x= movimientoXAhora;
+		dir.z = movimientoZAhora;
+
 		if (dir.sqrMagnitude > 1) {
 			dir.Normalize ();
 		}
+
+		vectorAnterior = dir;
+
+
+		//Debug
+		letreroDebug.text= "";
+		letreroDebug.text = "x.acel: " + (dir.x).ToString() + "\n";
+		letreroDebug.text += "z.acel: " + (dir.z).ToString() + "\n";
+		letreroDebug.text += "Rot.x: " + transform.rotation.x.ToString() + "\n";
+		letreroDebug.text += "Rot.z: " + transform.rotation.z.ToString() + "\n";
+
 		dir *= Time.deltaTime;
 		transform.Rotate (dir * velocidad);
 
-		transform.Rotate (movement);
 
 
 
